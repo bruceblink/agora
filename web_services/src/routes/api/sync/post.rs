@@ -1,20 +1,9 @@
 use crate::common::AppState;
 use actix_web::{HttpMessage, HttpRequest, HttpResponse, post, web};
-use chrono::Utc;
 use common::api::{ApiError, ApiResponse};
 use common::po::ApiResult;
 use common::utils::JwtClaims;
-use serde::{Deserialize, Serialize};
-use sqlx::FromRow;
-
-#[derive(Debug, Serialize, FromRow)]
-struct UserSettings {
-    id: i64,
-    user_id: i64,
-    setting_type: String,
-    data: Option<serde_json::Value>,
-    updated_at: chrono::DateTime<Utc>,
-}
+use serde::Deserialize;
 
 #[derive(Deserialize)]
 #[serde(rename_all = "camelCase")]
@@ -44,7 +33,7 @@ async fn sync_me_post(
     }
 
     {
-        let _ = sqlx::query_as::<_, UserSettings>(
+        sqlx::query(
             r#"
                 INSERT INTO user_setting (
                     user_id,
@@ -52,7 +41,8 @@ async fn sync_me_post(
                     data
                 ) VALUES ($1, $2, $3)
                 ON CONFLICT (user_id, setting_type) DO UPDATE SET
-                    data = EXCLUDED.data;
+                    data = EXCLUDED.data,
+                    updated_at = CURRENT_TIMESTAMP;
             "#,
         )
         .bind(claims.uid)
