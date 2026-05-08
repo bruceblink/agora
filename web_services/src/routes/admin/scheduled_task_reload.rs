@@ -1,11 +1,20 @@
 use crate::common::AppState;
-use actix_web::{HttpMessage, HttpRequest, HttpResponse, put, web};
+use actix_web::{HttpMessage, HttpRequest, HttpResponse, post, put, web};
 use common::api::{ApiError, ApiResponse};
 use common::po::ApiResult;
 use common::utils::JwtClaims;
 
 #[put("/task/reload")]
 async fn task_reload(req: HttpRequest, app_state: web::Data<AppState>) -> ApiResult {
+    reload_tasks(&req, &app_state).await
+}
+
+#[post("/task/reload")]
+async fn task_reload_post(req: HttpRequest, app_state: web::Data<AppState>) -> ApiResult {
+    reload_tasks(&req, &app_state).await
+}
+
+async fn reload_tasks(req: &HttpRequest, app_state: &web::Data<AppState>) -> ApiResult {
     let claims = req
         .extensions()
         .get::<JwtClaims>()
