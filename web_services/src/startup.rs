@@ -2,14 +2,14 @@ use crate::common::AppState;
 use crate::middleware::{AuthMiddleware, CharsetMiddleware};
 use crate::routes::register::register;
 use crate::routes::{
-    ani_collect_create, ani_collect_delete, ani_collect_list, ani_collect_watched, health,
+    ani_collect_create, ani_collect_delete, ani_collect_list, ani_collect_watched, health, index,
 };
 use crate::routes::{auth_github_callback, auth_github_login, auth_token_refresh};
 use crate::routes::{get_ani, get_anis};
 use crate::routes::{
-    logout, news_event_items_get, news_events_get, news_get, news_items_get, news_stream_sse,
-    proxy_image, scheduled_tasks_create, scheduled_tasks_delete, scheduled_tasks_get,
-    scheduled_tasks_toggle, scheduled_tasks_update, task_reload,
+    login, logout, news_event_items_get, news_events_get, news_get, news_items_get,
+    news_stream_sse, proxy_image, scheduled_tasks_create, scheduled_tasks_delete,
+    scheduled_tasks_get, scheduled_tasks_toggle, scheduled_tasks_update, task_reload,
 };
 use crate::routes::{me, sync_me_get, sync_me_post, sync_task_source};
 use actix_web::dev::Server;
@@ -101,7 +101,9 @@ async fn create_server(
             .wrap(CharsetMiddleware)
             .app_data(app_state.clone())
             // 公开路由（无需认证）
+            .service(index)
             .service(health)
+            .service(login)
             .service(logout)
             .service(register)
             .service(auth_token_refresh)
