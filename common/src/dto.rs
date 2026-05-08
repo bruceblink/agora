@@ -25,7 +25,7 @@ pub struct UserDto {
     pub avatar_url: String,
     pub created_at: String,
     pub updated_at: Option<String>,
-    pub tenant_id: Option<chrono::DateTime<Utc>>,
+    pub tenant_id: String,
     pub org_id: String,
     pub plan: String,
     pub token_version: i64,

@@ -84,7 +84,7 @@ pub struct UserInfo {
     pub avatar_url: String,
     pub created_at: chrono::DateTime<Utc>,
     pub updated_at: Option<chrono::DateTime<Utc>>,
-    pub tenant_id: Option<chrono::DateTime<Utc>>,
+    pub tenant_id: String,
     pub org_id: String,
     pub plan: String,
     pub token_version: i64,
